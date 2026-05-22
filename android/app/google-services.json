@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "339920863112",
+    "project_id": "cybershield-6388c",
+    "storage_bucket": "cybershield-6388c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:339920863112:android:1721be1a028ffcfb3d443d",
+        "android_client_info": {
+          "package_name": "com.company.cyber_shield"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB7seXqyDI8pWRvaFiQv-KTjW00tis1RnQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:339920863112:android:d11a247a0d8157663d443d",
+        "android_client_info": {
+          "package_name": "com.example.cyber_shield"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB7seXqyDI8pWRvaFiQv-KTjW00tis1RnQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
