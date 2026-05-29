@@ -49,8 +49,8 @@ class NotificationListenerProvider extends ChangeNotifier {
        _realmRepository = realmRepository,
        _settingsService = settingsService ?? SettingsService() {
     _queueService = NotificationQueueService<NotificationData>(
-  onProcess: _processEvent,
-);
+      onProcess: _processEvent,
+    );
     debugPrint('[NotificationListenerProvider] Initialized');
   }
 
@@ -189,9 +189,45 @@ class NotificationListenerProvider extends ChangeNotifier {
       _logCaptured(event);
 
       final message = event.message.trim();
+      final appName = event.appName.toLowerCase();
+      if (appName == 'com.example.cyber_shield') {
+  debugPrint(
+    '[NotificationListenerProvider] Skipping own CyberShield notification.',
+  );
+  return;
+}
+
+      if (appName == 'android' ||
+          appName.contains('systemui') ||
+          appName.contains('settings')) {
+        debugPrint(
+          '[NotificationListenerProvider] Skipping system notification: ${event.appName}',
+        );
+        return;
+      }
       if (message.isEmpty) {
         debugPrint(
           '[NotificationListenerProvider] Skipping empty notification message.',
+        );
+        return;
+      }
+
+      // Skip very short messages
+      if (message.length < 5) {
+        debugPrint(
+          '[NotificationListenerProvider] Skipping short message: $message',
+        );
+        return;
+      }
+
+      // Skip WhatsApp summary notifications
+      final lower = message.toLowerCase();
+
+      if (lower.contains('messages from') ||
+          lower.contains('chats') ||
+          lower.contains('new messages')) {
+        debugPrint(
+          '[NotificationListenerProvider] Skipping summary notification: $message',
         );
         return;
       }
@@ -232,13 +268,20 @@ class NotificationListenerProvider extends ChangeNotifier {
         riskScore: result.riskScore,
         isScam: result.isScam,
       );
-
-      // Always persist detections (scam + safe) to Realm for offline-first UI.
-      await _realmRepository.insertIfAbsent(scamNotification);
+      // Store only scam messages
+      if (result.isScam) {
+        await _realmRepository.insertIfAbsent(scamNotification);
+      }
 
       // Only trigger local notification when risk is detected.
       if (result.isScam && _settingsService.settings.notificationsEnabled) {
+        debugPrint(
+          '[NotificationListenerProvider] 🚨 Attempting to show scam notification',
+        );
         await NotificationService.showScamAlert(notification: scamNotification);
+        debugPrint(
+  '[NotificationListenerProvider] ✅ Scam notification request completed',
+);
       }
     } catch (e) {
       debugPrint('[NotificationListenerProvider] Error handling event: $e');
@@ -252,7 +295,9 @@ class NotificationListenerProvider extends ChangeNotifier {
       if (_predictionReady) {
         debugPrint('[NotificationListenerProvider] Prediction pipeline ready.');
       } else {
-        debugPrint('[NotificationListenerProvider] Prediction pipeline unavailable; detection disabled.');
+        debugPrint(
+          '[NotificationListenerProvider] Prediction pipeline unavailable; detection disabled.',
+        );
       }
     } catch (e) {
       _predictionReady = false;
@@ -334,7 +379,7 @@ class NotificationListenerProvider extends ChangeNotifier {
     debugPrint('[NotificationListenerProvider] Disposing...');
     unawaited(_notificationSubscription?.cancel() ?? Future<void>.value());
     _queueService.dispose();
-    
+
     if (_settingsListenerAttached) {
       _settingsService.removeListener(_handleSettingsChange);
     }

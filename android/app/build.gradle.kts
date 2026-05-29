@@ -49,4 +49,5 @@ flutter {
 }
 dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
+    implementation("org.tensorflow:tensorflow-lite-select-tf-ops:2.14.0")
 }

@@ -34,9 +34,13 @@ class ScamDetectionProvider extends ChangeNotifier {
     return sorted.take(4).toList();
   }
 
-  int get totalScanned => _messages.length;
-  int get totalScams => _messages.where((m) => m.isScam).length;
-  int get safeMessages => _messages.where((m) => !m.isScam).length;
+  int get totalThreats => _messages.length;
+
+int get highRiskThreats =>
+    _messages.where((m) => m.riskScore >= 80).length;
+
+int get mediumRiskThreats =>
+    _messages.where((m) => m.riskScore >= 50 && m.riskScore < 80).length;
 
   void updateSettingsService(SettingsService service) {
     if (identical(_settingsService, service)) return;
@@ -97,19 +101,27 @@ class ScamDetectionProvider extends ChangeNotifier {
         .toList();
   }
 
-  Future<void> addDetection(ScamMessage detection) async {
-    await _repository.insertIfAbsent(
-      ScamNotification(
-        appName: detection.appName,
-        sender: detection.sender,
-        message: detection.message,
-        receivedAt: detection.timestamp,
-        riskScore: detection.riskScore,
-        isScam: detection.isScam,
-      ),
+  
+Future<void> addDetection(ScamMessage detection) async {
+  // Store only suspicious/scam messages in Detection History
+  if (!detection.isScam) {
+    debugPrint(
+      '[ScamDetectionProvider] Safe message skipped: ${detection.message}',
     );
+    return;
   }
 
+  await _repository.insertIfAbsent(
+    ScamNotification(
+      appName: detection.appName,
+      sender: detection.sender,
+      message: detection.message,
+      receivedAt: detection.timestamp,
+      riskScore: detection.riskScore,
+      isScam: detection.isScam,
+    ),
+  );
+}
   Future<void> removeDetection(String id) async {
     await _repository.deleteById(id);
   }

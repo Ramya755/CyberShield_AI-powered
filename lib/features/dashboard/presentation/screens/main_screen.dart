@@ -5,7 +5,8 @@ import 'package:cyber_shield/core/utils/api_service.dart';
 import 'package:cyber_shield/features/links/presentation/screens/link_scanner_screen.dart';
 import 'package:cyber_shield/features/report/presentation/screens/report_screen.dart';
 import 'package:cyber_shield/features/sms/presentation/detection_history_screen.dart';
-
+import 'package:provider/provider.dart';
+import 'package:cyber_shield/features/sms/presentation/providers/scam_detection_provider.dart';
 class MainScreen extends StatefulWidget {
   const MainScreen({
     super.key,
@@ -50,7 +51,7 @@ const LinkScannerScreen(),
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             navItem(Icons.home_outlined, 'Home', 0),
-            navItem(Icons.chat_bubble_outline, 'SMS', 1),
+          navItem(Icons.warning_amber_rounded, 'Threats', 1),
             navItem(Icons.link, 'Links', 2),
             navItem(Icons.info_outline, 'Report', 3),
             navItem(Icons.person_outline, 'Profile', 4),
@@ -146,10 +147,19 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
                 const SizedBox(height: 40),
-                _buildScoreCard(cardColor),
+                Consumer<ScamDetectionProvider>(
+  builder: (context, provider, _) {
+    final threats = provider.messages.length;
+    final highRisk = provider.messages.where((m) => m.riskScore >= 80).length;
+
+    final score = threats == 0 ? 100 : (100 - (highRisk * 10)).clamp(0, 100);
+
+    return _buildScoreCard(cardColor, score, threats, highRisk);
+  },
+),
                 const SizedBox(height: 30),
                 const Text(
-                  'Recent Threats',
+                  'Recent Scam Detections',
                   style: TextStyle(fontSize: 21, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 16),
@@ -166,7 +176,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     } else if (snapshot.hasError) {
                       return _buildErrorState(snapshot.error.toString());
                     } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                      return const Center(child: Text("No threats detected."));
+                      return const Center(child: Text("No scam detections yet."));
                     } else {
                       return Column(
                         children:
@@ -186,7 +196,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildScoreCard(Color cardColor) {
+  Widget _buildScoreCard(Color cardColor, int score, int threats, int highRisk) {
     return Center(
       child: Card(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(22)),
@@ -203,17 +213,17 @@ class _HomeScreenState extends State<HomeScreen> {
                     height: 170,
                     width: 170,
                     child: CircularProgressIndicator(
-                      value: 0.87,
+                      value: score / 100,
                       strokeWidth: 18,
                       backgroundColor: Colors.grey.withValues(alpha: 0.2),
                       color: Colors.green,
                     ),
                   ),
-                  const Column(
+                  Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        '87',
+                        '$score',
                         style: TextStyle(
                           fontSize: 52,
                           fontWeight: FontWeight.bold,
@@ -228,8 +238,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
               const SizedBox(height: 25),
-              const Text(
-                '↗ +5 from last week',
+              Text(
+                'Threats: $threats | High Risk: $highRisk',
                 style: TextStyle(
                   color: Colors.green,
                   fontWeight: FontWeight.bold,

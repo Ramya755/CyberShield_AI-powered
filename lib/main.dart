@@ -11,10 +11,16 @@ import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'features/sms/data/local/notifications/providers/notification_listener_provider.dart';
 import 'features/sms/data/local/notifications/presentation/notification_permission_gate.dart';
+import 'features/sms/data/local/notifications/notification_service.dart';
+import 'package:cyber_shield/core/shared/navigation.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  await NotificationService.initialize();
+
   runApp(const CyberShieldApp());
 }
 
@@ -44,6 +50,7 @@ class CyberShieldApp extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'CyberShield',
+        navigatorKey: navigatorKey,
         theme: ThemeData.dark(),
         home: const AuthGate(),
       ),

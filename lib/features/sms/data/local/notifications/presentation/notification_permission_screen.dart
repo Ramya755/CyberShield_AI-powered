@@ -15,8 +15,9 @@ class NotificationPermissionScreen extends StatelessWidget {
       backgroundColor: AppColors.backgroundDark,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
+  padding: const EdgeInsets.all(20),
+  child: SingleChildScrollView(
+    child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 12),
@@ -92,7 +93,7 @@ class NotificationPermissionScreen extends StatelessWidget {
                 title: 'Return to the app',
                 subtitle: 'We will start capturing notifications.',
               ),
-              const Spacer(),
+              const SizedBox(height: 24),
               SizedBox(
                 width: double.infinity,
                 child: FilledButton.icon(
@@ -118,6 +119,7 @@ class NotificationPermissionScreen extends StatelessWidget {
           ),
         ),
       ),
+    )
     );
   }
 }

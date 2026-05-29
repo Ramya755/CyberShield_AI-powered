@@ -43,12 +43,33 @@ class DetectionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final data = detection ?? message;
+    String appName = data?.appName?.toString() ?? 'Unknown App';
 
-    final appName = data?.appName?.toString() ?? 'Unknown App';
+switch (appName.toLowerCase()) {
+  case 'com.whatsapp':
+    appName = 'WhatsApp';
+    break;
+
+  case 'com.facebook.orca':
+    appName = 'Messenger';
+    break;
+
+  case 'com.google.android.apps.messaging':
+    appName = 'Messages';
+    break;
+}
     final sender = data?.sender?.toString() ?? 'Unknown Sender';
     final text = data?.message?.toString() ?? 'No message';
     final isScam = data?.isScam == true;
-    final riskScore = data?.riskScore?.toString() ?? '0';
+    final score = data?.riskScore is int
+    ? data.riskScore as int
+    : int.tryParse(data?.riskScore?.toString() ?? '0') ?? 0;
+
+final riskLabel = score >= 80
+    ? '🔴 High Risk Scam'
+    : score >= 50
+        ? '🟠 Medium Risk Scam'
+        : '🟡 Low Risk Suspicious';
 
     return Card(
       color: AppColors.cardDark,
@@ -78,7 +99,7 @@ class DetectionCard extends StatelessWidget {
         subtitle: Padding(
           padding: const EdgeInsets.only(top: 6),
           child: Text(
-            '$appName\n$text\nRisk Score: $riskScore | ${isScam ? "Scam" : "Safe"}',
+            '$appName\n$text\n${isScam ? riskLabel : "Safe"}\nRisk Score: $score/100',
             style: const TextStyle(
               color: AppColors.textSecondary,
               height: 1.4,
