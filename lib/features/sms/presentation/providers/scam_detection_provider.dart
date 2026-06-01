@@ -103,13 +103,10 @@ int get mediumRiskThreats =>
 
   
 Future<void> addDetection(ScamMessage detection) async {
-  // Store only suspicious/scam messages in Detection History
-  if (!detection.isScam) {
-    debugPrint(
-      '[ScamDetectionProvider] Safe message skipped: ${detection.message}',
-    );
-    return;
-  }
+  debugPrint('[ScamDetectionProvider] addDetection called');
+  debugPrint('[ScamDetectionProvider] Message: ${detection.message}');
+  debugPrint('[ScamDetectionProvider] Risk: ${detection.riskScore}');
+  debugPrint('[ScamDetectionProvider] isScam: ${detection.isScam}');
 
   await _repository.insertIfAbsent(
     ScamNotification(
@@ -121,6 +118,8 @@ Future<void> addDetection(ScamMessage detection) async {
       isScam: detection.isScam,
     ),
   );
+
+  debugPrint('[ScamDetectionProvider] Insert sent to Realm');
 }
   Future<void> removeDetection(String id) async {
     await _repository.deleteById(id);

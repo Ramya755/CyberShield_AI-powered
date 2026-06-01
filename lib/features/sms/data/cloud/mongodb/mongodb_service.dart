@@ -24,6 +24,13 @@ class MongoDbService {
     }
     return value;
   }
+  DbCollection getCollection(String name) {
+  final db = _db;
+  if (db == null) {
+    throw StateError('MongoDbService is not initialized.');
+  }
+  return db.collection(name);
+}
 
   Future<void> initialize() async {
     if (isInitialized) return;

@@ -11,13 +11,24 @@ class ScannerProvider extends ChangeNotifier {
 
   /// LOAD HISTORY
   Future<void> loadHistory() async {
+    debugPrint("[ScannerProvider] loadHistory called");
+
     historyList = await HistoryService.getHistory();
+
+    debugPrint(
+      "[ScannerProvider] Loaded History: ${historyList.length}",
+    );
+
     notifyListeners();
   }
 
   /// SCAN LINK
   Future<void> scanLink(String url) async {
+    debugPrint("[ScannerProvider] scanLink called with: $url");
+
     if (url.isEmpty) {
+      debugPrint("[ScannerProvider] URL is empty. Stopping.");
+
       result = "No valid link found";
       notifyListeners();
       return;
@@ -37,7 +48,7 @@ class ScannerProvider extends ChangeNotifier {
     reasons = List<String>.from(data["reasons"]);
 
     if (riskScore >= 70) {
-      result = " Dangerous Link!";
+      result = "Dangerous Link!";
     } else if (riskScore >= 40) {
       result = "Suspicious Link";
     } else {
@@ -47,11 +58,17 @@ class ScannerProvider extends ChangeNotifier {
     isLoading = false;
     notifyListeners();
 
+    debugPrint("[ScannerProvider] Result: $result");
+    debugPrint("[ScannerProvider] Risk Score: $riskScore");
+    debugPrint("[ScannerProvider] Calling saveScan...");
+
     await HistoryService.saveScan(
       url: url,
       status: result,
       riskScore: riskScore,
     );
+
+    debugPrint("[ScannerProvider] saveScan finished");
 
     await loadHistory();
   }

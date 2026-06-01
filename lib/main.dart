@@ -13,6 +13,8 @@ import 'features/sms/data/local/notifications/providers/notification_listener_pr
 import 'features/sms/data/local/notifications/presentation/notification_permission_gate.dart';
 import 'features/sms/data/local/notifications/notification_service.dart';
 import 'package:cyber_shield/core/shared/navigation.dart';
+import 'dart:async';
+import 'features/sms/data/cloud/mongodb/sync_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,7 +22,12 @@ void main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   await NotificationService.initialize();
-
+  try {
+  await MongoSyncService.instance.initialize();
+  unawaited(MongoSyncService.instance.start());
+} catch (e) {
+  debugPrint('[Main] Mongo sync init failed: $e');
+}
   runApp(const CyberShieldApp());
 }
 

@@ -250,44 +250,39 @@ class ReportController extends ChangeNotifier {
     return buffer.toString();
   }
 
-  Future<bool> openMail() async {
-    _isOpeningMail = true;
+  
+Future<bool> openMail() async {
+  _isOpeningMail = true;
+  notifyListeners();
+
+  try {
+    final mailtoUri = Uri(
+      scheme: 'mailto',
+      path: selectedOfficialEmail,
+      queryParameters: {
+        'subject': generateEmailSubject,
+        'body': generateEmailBody,
+      },
+    );
+
+    final opened = await launchUrl(
+      mailtoUri,
+      mode: LaunchMode.externalApplication,
+    );
+
+    _isOpeningMail = false;
     notifyListeners();
 
-    try {
-      final subject = Uri.encodeComponent(generateEmailSubject);
-      final body = Uri.encodeComponent(generateEmailBody);
+    return opened;
+  } catch (e) {
+    debugPrint('[ReportController] openMail error: $e');
 
-      final mailtoUri = Uri.parse(
-        'mailto:$selectedOfficialEmail?subject=$subject&body=$body',
-      );
+    _isOpeningMail = false;
+    notifyListeners();
 
-      if (await launchUrl(mailtoUri, mode: LaunchMode.externalApplication)) {
-        _isOpeningMail = false;
-        notifyListeners();
-        return true;
-      }
-
-      final gmailWebUri = Uri.parse(
-        'https://mail.google.com/mail/?view=cm&fs=1&to=${Uri.encodeComponent(selectedOfficialEmail)}&su=$subject&body=$body',
-      );
-
-      final openedGmail = await launchUrl(
-        gmailWebUri,
-        mode: LaunchMode.platformDefault,
-        webOnlyWindowName: '_self',
-      );
-
-      _isOpeningMail = false;
-      notifyListeners();
-      return openedGmail;
-    } catch (_) {
-      _isOpeningMail = false;
-      notifyListeners();
-      return false;
-    }
+    return false;
   }
-
+}
   @override
   void dispose() {
     victimNameController.dispose();

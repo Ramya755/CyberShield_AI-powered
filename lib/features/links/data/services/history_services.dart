@@ -1,51 +1,75 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
+import 'package:flutter/foundation.dart';
+import 'package:mongo_dart/mongo_dart.dart';
+
+import 'package:cyber_shield/core/shared/app_config.dart';
 
 class HistoryService {
-  static const String baseUrl = "http://10.16.53.221:5000";
+  static const String _collectionName = "link_scans";
 
-  /// SAVE SCAN
   static Future<void> saveScan({
-    required String url,
-    required String status,
-    required int riskScore,
-  }) async {
-    try {
-      await http.post(
-        Uri.parse("$baseUrl/saveScan"),
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json",
-        },
-        body: jsonEncode({
-          "url": url,
-          "status": status,
-          "riskScore": riskScore,
-        }),
-      );
-    } catch (e) {
-      print("Save Error: $e");
-    }
+  required String url,
+  required String status,
+  required int riskScore,
+}) async {
+  Db? db;
+
+  try {
+    debugPrint("[HistoryService] saveScan called");
+    debugPrint("[HistoryService] URL: $url");
+    debugPrint("[HistoryService] Status: $status");
+    debugPrint("[HistoryService] Risk Score: $riskScore");
+    debugPrint("[HistoryService] Mongo URL empty: ${AppConfig.mongoConnectionString.isEmpty}");
+
+    db = await Db.create(AppConfig.mongoConnectionString);
+    debugPrint("[HistoryService] DB created");
+
+    await db.open();
+    debugPrint("[HistoryService] DB opened");
+
+    final collection = db.collection(_collectionName);
+    debugPrint("[HistoryService] Collection: $_collectionName");
+
+    final result = await collection.insertOne({
+      "_id": ObjectId(),
+      "url": url,
+      "status": status,
+      "riskScore": riskScore,
+      "scannedAt": DateTime.now().toUtc(),
+    });
+
+    debugPrint("[HistoryService] Insert success: ${result.isSuccess}");
+    debugPrint("[HistoryService] Insert document id: ${result.id}");
+  } catch (e, stackTrace) {
+    debugPrint("[HistoryService] Save Error: $e");
+    debugPrint("[HistoryService] Save StackTrace: $stackTrace");
+  } finally {
+    await db?.close();
+    debugPrint("[HistoryService] DB closed");
   }
-
-  /// GET HISTORY
+}
   static Future<List<dynamic>> getHistory() async {
+    Db? db;
+
     try {
-      final response = await http.get(
-        Uri.parse("$baseUrl/history"),
-        headers: {
-          "Accept": "application/json",
-        },
-      );
+      debugPrint("[HistoryService] getHistory called");
 
-      if (response.statusCode == 200) {
-        return jsonDecode(response.body);
-      }
+      db = await Db.create(AppConfig.mongoConnectionString);
+      await db.open();
 
-      return [];
+      final collection = db.collection(_collectionName);
+
+      final history = await collection
+          .find(where.sortBy("scannedAt", descending: true))
+          .toList();
+
+      debugPrint("[HistoryService] History Count: ${history.length}");
+
+      return history;
     } catch (e) {
-      print("History Error: $e");
+      debugPrint("[HistoryService] History Error: $e");
       return [];
+    } finally {
+      await db?.close();
     }
   }
 }

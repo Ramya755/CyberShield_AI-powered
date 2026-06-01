@@ -269,10 +269,25 @@ class NotificationListenerProvider extends ChangeNotifier {
         isScam: result.isScam,
       );
       // Store only scam messages
-      if (result.isScam) {
-        await _realmRepository.insertIfAbsent(scamNotification);
-      }
 
+final shouldStore =
+    result.isScam || result.riskScore >= 50;
+
+if (shouldStore) {
+  debugPrint(
+    '[NotificationListenerProvider] Saving risky notification to Realm...',
+  );
+
+  await _realmRepository.insertIfAbsent(scamNotification);
+
+  debugPrint(
+    '[NotificationListenerProvider] Saved risky notification to Realm.',
+  );
+} else {
+  debugPrint(
+    '[NotificationListenerProvider] Safe notification skipped.',
+  );
+}
       // Only trigger local notification when risk is detected.
       if (result.isScam && _settingsService.settings.notificationsEnabled) {
         debugPrint(
