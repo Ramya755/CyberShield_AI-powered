@@ -15,6 +15,7 @@ import 'features/sms/data/local/notifications/notification_service.dart';
 import 'package:cyber_shield/core/shared/navigation.dart';
 import 'dart:async';
 import 'features/sms/data/cloud/mongodb/sync_service.dart';
+import 'package:cyber_shield/features/splash/presentation/screens/splash_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -59,7 +60,7 @@ class CyberShieldApp extends StatelessWidget {
         title: 'CyberShield',
         navigatorKey: navigatorKey,
         theme: ThemeData.dark(),
-        home: const AuthGate(),
+      home: const SplashScreen(),
       ),
     );
   }

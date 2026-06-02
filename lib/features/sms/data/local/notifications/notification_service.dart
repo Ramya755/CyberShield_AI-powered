@@ -110,29 +110,30 @@ class NotificationService {
     if (kDebugMode) {
       debugPrint('Showing notification with payload: $encoded');
     }
-
-    const AndroidNotificationDetails androidDetails =
-        AndroidNotificationDetails(
-          _channelId,
-          _channelName,
-          channelDescription: _channelDescription,
-          importance: Importance.max,
-          priority: Priority.high,
-          playSound: true,
-          enableVibration: true,
-        );
-
+const AndroidNotificationDetails androidDetails =
+    AndroidNotificationDetails(
+  _channelId,
+  _channelName,
+  channelDescription: _channelDescription,
+  importance: Importance.max,
+  priority: Priority.high,
+  playSound: true,
+  enableVibration: true,
+  color: Color(0xFF42D7FF),
+  largeIcon: DrawableResourceAndroidBitmap('@mipmap/ic_launcher'),
+);
+   
     const NotificationDetails notificationDetails = NotificationDetails(
       android: androidDetails,
     );
 
     await _notificationsPlugin.show(
-      id ~/ 1000,
-      'Scam Alert from ${notification.appName} 🚨',
-      '${notification.sender}: ${notification.message}',
-      notificationDetails,
-      payload: encoded,
-    );
+  id ~/ 1000,
+  '🚨 CyberShield Threat Detected',
+  'Suspicious message from ${notification.sender} • Risk ${notification.riskScore}/100',
+  notificationDetails,
+  payload: encoded,
+);
 
     if (kDebugMode) {
       debugPrint('Notification show function completed');
