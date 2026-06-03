@@ -4,6 +4,8 @@ AI-Powered Personal Cybersecurity Guardian for Android
 
 CyberShield is an AI-powered Flutter Android application designed to protect smartphone users from phishing SMS, malicious links, and online scams in real time. The app combines on-device machine learning, offline-first architecture, native Android notification monitoring, and cybersecurity workflows to provide secure threat detection and monitoring.
 <img width="250" height="550" alt="image" src="https://github.com/user-attachments/assets/8c45812c-e2bf-4c88-8ee8-74c20fb55dde" />
+<img width="720" height="1600" alt="image" src="https://github.com/user-attachments/assets/c77e9e31-0e5c-421c-8612-58a2617b21b2" />
+
 
 ---
 
