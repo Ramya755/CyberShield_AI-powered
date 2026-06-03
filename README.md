@@ -1,11 +1,44 @@
 # 🛡️ CyberShield
 
-AI-Powered Personal Cybersecurity Guardian for Android
+### AI-Powered Personal Cybersecurity Guardian for Android
 
-CyberShield is an AI-powered Flutter Android application designed to protect smartphone users from phishing SMS, malicious links, and online scams in real time. The app combines on-device machine learning, offline-first architecture, native Android notification monitoring, and cybersecurity workflows to provide secure threat detection and monitoring.
-<img width="250" height="550" alt="image" src="https://github.com/user-attachments/assets/8c45812c-e2bf-4c88-8ee8-74c20fb55dde" />
-<img width="720" height="1600" alt="image" src="https://github.com/user-attachments/assets/c77e9e31-0e5c-421c-8612-58a2617b21b2" />
+CyberShield is an AI-powered Flutter Android application designed to protect smartphone users from phishing SMS, malicious links, and online scams in real time.
 
+The app combines on-device machine learning, offline-first architecture, native Android notification monitoring, and cybersecurity workflows to provide secure threat detection and monitoring.
+
+---
+
+# 📱 Application Screenshots
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/8c45812c-e2bf-4c88-8ee8-74c20fb55dde" width="230"/>
+  <img src="https://github.com/user-attachments/assets/c77e9e31-0e5c-421c-8612-58a2617b21b2" width="230"/>
+  <img src="https://github.com/user-attachments/assets/b845532b-ba79-4218-8f6b-1ae6ee7b7908" width="230"/>
+</p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/91ac8dff-9499-4008-b7c6-eff886c441d7" width="230"/>
+  <img src="https://github.com/user-attachments/assets/cb187f99-97bf-40a9-be20-2fb1aee8e7cf" width="230"/>
+  <img src="https://github.com/user-attachments/assets/f2c2027a-4591-4d90-b5be-b25478575945" width="230"/>
+</p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/5e11e627-38b6-47e0-b9c1-b0a8095bb5f0" width="230"/>
+  <img src="https://github.com/user-attachments/assets/de005a98-4eb6-4803-9e01-f40477784e89" width="230"/>
+  <img src="https://github.com/user-attachments/assets/c9511bec-0c23-4dd3-a93a-21a2f30952af" width="230"/>
+</p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/b86bc19e-0a4c-42c2-8fc0-143f089855eb" width="230"/>
+  <img src="https://github.com/user-attachments/assets/bdc5ad48-11f6-4069-8c32-de2702d32eb7" width="230"/>
+  <img src="https://github.com/user-attachments/assets/e3ab9655-cea7-4904-91d8-2c9ebefe14d3" width="230"/>
+</p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/0913ded2-f741-4550-966a-8a2349b1d797" width="230"/>
+  <img src="https://github.com/user-attachments/assets/30b211d1-f30b-4b84-b146-69a7b6644c60" width="230"/>
+  <img src="https://github.com/user-attachments/assets/5d05627c-5691-4b62-b1eb-2a89fc36acd1" width="230"/>
+</p>
 
 ---
 
@@ -223,6 +256,7 @@ flutterfire configure
 
 4. Ensure generated `firebase_options.dart` is used.
 
+---
 
 # 📌 Note
 
